@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>my flappy bird clone!!!</title>
+<title>Flappy Bird Clone</title>
 <style>
   canvas {
     border: 2px solid black;
@@ -40,7 +40,7 @@
     }
   };
 
-  const pipes = [];
+  let pipes = [];
   const pipeWidth = 50;
   const pipeGap = 200;
   const pipeSpeed = 3;
@@ -52,7 +52,9 @@
     bird.draw();
 
     for (const pipe of pipes) {
-      pipe.draw();
+      ctx.fillStyle = 'green';
+      ctx.fillRect(pipe.x, 0, pipeWidth, pipe.height);
+      ctx.fillRect(pipe.x, pipe.height + pipeGap, pipeWidth, canvas.height - pipe.height - pipeGap);
     }
 
     ctx.fillStyle = 'black';
@@ -69,20 +71,20 @@
     }
 
     for (const pipe of pipes) {
-      pipe.update();
-
-      if (pipe.x + pipeWidth >= bird.x && pipe.x <= bird.x && (bird.y <= pipe.top || bird.y >= pipe.bottom)) {
+      if (bird.x + bird.radius > pipe.x && bird.x - bird.radius < pipe.x + pipeWidth &&
+          (bird.y - bird.radius < pipe.height || bird.y + bird.radius > pipe.height + pipeGap)) {
         gameOver();
         return;
       }
 
-      if (pipe.x + pipeWidth < bird.x && !pipe.passed) {
+      if (bird.x === pipe.x + pipeWidth) {
         score++;
-        pipe.passed = true;
       }
     }
 
     pipes.forEach((pipe, index) => {
+      pipe.x -= pipeSpeed;
+
       if (pipe.x + pipeWidth < 0) {
         pipes.splice(index, 1);
       }
@@ -105,21 +107,10 @@
 
   let frame = 0;
   function createPipe() {
-    const pipeHeight = Math.random() * (canvas.height - pipeGap * 2) + pipeGap;
+    const pipeHeight = Math.random() * (canvas.height - pipeGap);
     pipes.push({
       x: canvas.width,
-      top: 0,
-      height: pipeHeight,
-      bottom: pipeHeight + pipeGap,
-      draw: function() {
-        ctx.fillStyle = 'green';
-        ctx.fillRect(this.x, this.top, pipeWidth, this.height);
-        ctx.fillRect(this.x, this.bottom, pipeWidth, canvas.height - this.bottom);
-      },
-      update: function() {
-        this.x -= pipeSpeed;
-      },
-      passed: false
+      height: pipeHeight
     });
   }
 
