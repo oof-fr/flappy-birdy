@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Flappy Bird Clone</title>
+<title>my flappy bird game!!!</title>
 <style>
   canvas {
     border: 2px solid black;
@@ -106,12 +106,14 @@
   }
 
   let frame = 0;
+  let lastPipeHeight = canvas.height / 2;
   function createPipe() {
-    const pipeHeight = Math.random() * (canvas.height - pipeGap);
+    const pipeHeight = Math.random() * (canvas.height - pipeGap - 100) + 50;
     pipes.push({
       x: canvas.width,
       height: pipeHeight
     });
+    lastPipeHeight = pipeHeight;
   }
 
   document.addEventListener('keydown', function(event) {
